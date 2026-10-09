@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.amazoncognito.com https://*.amazoncognito.com.cn https://*.execute-api.eu-central-1.amazonaws.com; base-uri 'none'; object-src 'none'; form-action 'self' https://*.amazoncognito.com https://*.amazoncognito.com.cn" />
+  <title>Customer Insight Studio — FDE concept demo</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./config.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="./index.html" aria-label="Customer Insight Studio home">
+        <span class="brand-mark">P<span class="brand-dot">.</span></span>
+        <span class="brand-label"><strong>PRADA</strong><span>CONCEPT STUDIO</span></span>
+      </a>
+      <span class="sidebar-heading">WORKSPACE</span>
+      <nav aria-label="Main navigation">
+        <a class="nav-link active" href="#workspace"><span class="nav-ico">▦</span> Overview</a>
+        <a class="nav-link" href="#insights"><span class="nav-ico">◇</span> Recurring issues</a>
+        <a class="nav-link" href="#briefing"><span class="nav-ico">✧</span> Executive summary</a>
+        <a class="nav-link" href="#actions"><span class="nav-ico">↗</span> Recommended actions</a>
+        <a class="nav-link" href="#markets"><span class="nav-ico">◎</span> Regional insights</a>
+        <a class="nav-link" href="#categories"><span class="nav-ico">▣</span> Product categories</a>
+        <a class="nav-link" href="#channels"><span class="nav-ico">⌁</span> Feedback channels</a>
+        <a class="nav-link" href="#feedback"><span class="nav-ico">≡</span> Feedback records</a>
+      </nav>
+      <div class="sidebar-bottom"><span class="dot-live"></span> Demo workspace <p>Prada-inspired concept · independent prototype</p></div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="breadcrumbs">CUSTOMER EXPERIENCE <span>/</span> FEEDBACK ANALYSIS</div>
+        <div class="top-actions"><span id="authStatus" class="auth-status" aria-live="polite">Not signed in</span><button id="loginBtn" class="button button-dark" type="button">Sign in</button><button id="logoutBtn" class="button button-outline" type="button" hidden>Sign out</button></div>
+      </header>
+      <main id="workspace" class="main-content">
+        <section class="hero">
+          <div><span class="eyebrow">CUSTOMER EXPERIENCE · CONCEPT APPLICATION</span><h1>Customer Feedback<br/><em>Intelligence.</em></h1><p>Upload customer comments to spot recurring issues, review sentiment, and investigate the evidence behind each finding.</p></div>
+        </section>
+
+        <section class="import-card" aria-labelledby="uploadTitle">
+          <div class="section-heading"><div><span class="eyebrow">01 / INPUT</span><h2 id="uploadTitle">Feedback collection</h2><p>Upload up to 20 feedback records. Include the market field to receive region-specific insights.</p></div><div class="import-actions"><a class="button button-outline" href="./feedback_template.csv" download="feedback_template.csv">↓ Download CSV template</a><label class="button button-accent upload-btn" for="csvInput">↑ Upload CSV</label><input id="csvInput" type="file" accept=".csv,text/csv" class="visually-hidden" /></div></div>
+          <p class="format-hint">Required columns: <code>feedback_id</code>, <code>comment</code> · Recommended: <code>market</code>, <code>date</code>, <code>channel</code>, <code>product_category</code></p>
+          <div class="import-footer"><span><strong id="loadedCount">0</strong> records ready</span><span id="importMessage" role="status">No feedback loaded · CSV required</span><button id="analyzeBtn" type="button" class="button button-accent" disabled>✳ Analyze with AI <span aria-hidden="true">↗</span></button></div>
+          <div id="statusMessage" class="status-message" aria-live="polite" hidden></div>
+        </section>
+
+        <section class="kpis" aria-label="Analysis summary">
+          <article class="kpi"><span>RECORDS ANALYZED</span><strong id="metricTotal">—</strong><small>Current batch</small></article>
+          <article class="kpi"><span>NEGATIVE SENTIMENT</span><strong id="metricNegative">—</strong><small>Number of comments</small></article>
+          <article class="kpi"><span>RECURRING ISSUES</span><strong id="metricIssues">—</strong><small>Groups with ≥2 complaints</small></article>
+          <article class="kpi"><span>MODEL EXECUTION</span><strong id="metricLatency">—</strong><small id="metricMode">Awaiting analysis</small></article>
+        </section>
+
+        <div class="dashboard-grid">
+          <section class="panel" aria-labelledby="sentimentTitle"><div class="panel-heading"><div><span class="eyebrow">02 / ANALYTICS</span><h2 id="sentimentTitle">Sentiment overview</h2></div><span class="panel-hint">Analyzed feedback</span></div><div id="sentimentChart" class="sentiment-chart"><p class="empty">Run an analysis to see the sentiment distribution.</p></div></section>
+          <section class="panel" id="insights" aria-labelledby="issuesTitle"><div class="panel-heading"><div><span class="eyebrow">03 / THEMES</span><h2 id="issuesTitle">Recurring issues</h2></div><span class="panel-hint">Negative feedback</span></div><div id="issuesList"><p class="empty">Repeated complaints and their supporting records will appear here.</p></div></section>
+        </div>
+
+        <section class="panel summary-panel" aria-labelledby="briefingTitle" id="briefing">
+          <div class="panel-heading"><div><span class="eyebrow">04 / BRIEFING</span><h2 id="briefingTitle">Executive summary</h2></div><span id="summaryMode" class="label-soft">AWAITING ANALYSIS</span></div>
+          <div id="executiveSummary"><p class="empty">Run an analysis to generate a briefing from your selected records.</p></div>
+        </section>
+        <section class="panel recommendation-panel" id="actions" aria-labelledby="recommendTitle"><div class="panel-heading"><div><span class="eyebrow">05 / ACTIONS</span><h2 id="recommendTitle">Recommended follow-ups</h2></div><span id="recommendMode" class="label-soft">ANALYST REVIEW</span></div><p id="recommendHint" class="hint">Suggested investigations need human review. Findings do not establish root causes.</p><div id="recommendations"><p class="empty">Run an analysis to generate evidence-linked actions.</p></div></section>
+
+        <section class="panel market-panel" id="markets" aria-labelledby="marketTitle">
+          <div class="panel-heading"><div><span class="eyebrow">06 / MARKETS</span><h2 id="marketTitle">Regional insights</h2><p class="market-intro">Compare negative feedback by market, with linked comments and investigative next steps. Percentages describe only this uploaded sample.</p></div><span class="panel-hint">Based on market column</span></div>
+          <div id="marketInsights" class="market-grid"><p class="empty">Upload feedback with a market column and run analysis to compare regions.</p></div>
+        </section>
+
+        <section class="panel segment-panel" id="categories" aria-labelledby="categoryTitle">
+          <div class="panel-heading"><div><span class="eyebrow">07 / PRODUCTS</span><h2 id="categoryTitle">Product category insights</h2><p class="market-intro">Find product categories with concentrated negative feedback, their leading complaint theme, and supporting comments.</p></div><span class="panel-hint">Based on product_category column</span></div>
+          <div id="categoryInsights" class="market-grid"><p class="empty">Upload feedback with a product_category column to compare product categories.</p></div>
+        </section>
+        <section class="panel segment-panel" id="channels" aria-labelledby="channelTitle">
+          <div class="panel-heading"><div><span class="eyebrow">08 / CHANNELS</span><h2 id="channelTitle">Feedback channel insights</h2><p class="market-intro">Compare survey, support, and review feedback. These are channel-level patterns in the imported sample, not channel-quality scores.</p></div><span class="panel-hint">Based on channel column</span></div>
+          <div id="channelInsights" class="market-grid"><p class="empty">Upload feedback with a channel column to compare feedback sources.</p></div>
+        </section>
+
+        <section class="panel feedback-panel" id="feedback" aria-labelledby="feedbackTitle"><div class="panel-heading"><div><span class="eyebrow">09 / EVIDENCE</span><h2 id="feedbackTitle">Individual feedback</h2></div><label class="filter-label">Sentiment <select id="filterSentiment"><option value="all">All</option><option value="negative">Negative</option><option value="neutral">Neutral</option><option value="positive">Positive</option></select></label></div><div class="table-scroll"><table><thead><tr><th>REFERENCE</th><th>MARKET / CHANNEL</th><th>PRODUCT CATEGORY</th><th>CUSTOMER COMMENT</th><th>SENTIMENT</th><th>THEME</th></tr></thead><tbody id="feedbackRows"><tr><td colspan="6" class="empty">Load feedback to preview records.</td></tr></tbody></table></div></section>
+      </main>
+      <footer>INDEPENDENT CONCEPT · SYNTHETIC DATA ONLY <span>AI-assisted analysis · Human review required</span></footer>
+    </div>
+  </div>
+</body>
+</html>
