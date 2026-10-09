@@ -1,0 +1,41 @@
+
+name: CI - Backend and Frontend Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run application tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run backend unit tests
+        run: |
+          python -m unittest discover -s tests -p 'test_lambda_function.py' -v
+
+      - name: Run frontend tests
+        run: node tests/test_frontend_csv.cjs
+
+      - name: Validate JavaScript syntax
+        run: |
+          node --check frontend/app.js
+          node --check frontend/config.js
