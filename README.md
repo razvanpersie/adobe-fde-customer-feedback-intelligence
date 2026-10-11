@@ -118,7 +118,23 @@ You can serve the static frontend locally (`python -m http.server 8000 --directo
 
 ## AI-assisted development disclosure
 
-An AI coding assistant helped generate initial code, improve output validation, produce tests, and document design trade-offs. Engineering boundaries (trusted counting vs AI-generated interpretations), API authentication design, and manually verified acceptance criteria were chosen intentionally. AI-generated code should be reviewed and tested before deployment; we do not use the model to manufacture counts or authoritative citations.
+**AI tool used:** ChatGPT assisted throughout ideation, design, coding, testing, and documentation. AI-assisted code and recommendations were iteratively reviewed, adapted, and tested against the working AWS deployment; generated output was not treated as automatically correct.
+
+- **Ideation:** Helped evaluate customer-facing AI workflow ideas and refine the fictional luxury-retail customer-feedback problem into a focused MVP for non-technical customer-experience analysts.
+- **Architecture and design:** Helped explore the serverless AWS architecture (CloudFront/S3, Cognito, API Gateway, Lambda, and Bedrock), authentication flow, request/response contracts, and separation between generative interpretation and deterministic business logic.
+- **Coding:** Assisted in drafting and refining the Python Lambda handler, Bedrock structured-output integration, JavaScript dashboard, CSV ingestion, and breakdowns by market, product category, and feedback channel.
+- **Testing and troubleshooting:** Assisted in writing Python unit tests and JavaScript CSV/UI checks, defining negative test cases, checking model-output validation, and diagnosing deployment issues such as CORS configuration. Tests run without calling Bedrock; the end-to-end workflow was also exercised in AWS.
+- **Documentation:** Helped draft and organize this README, the business case, architecture decisions, deployment instructions, trade-offs, and interview notes.
+
+**Where AI was deliberately not relied upon:**
+
+- **Authoritative calculations:** The language model does not generate trusted counts, ratios, rankings, or evidence-ID mappings. Lambda derives these deterministically from the uploaded records and validated classifications.
+- **Authentication and authorization:** Cognito and the API Gateway authorizer enforce access; a prompt is never treated as a security control. The frontend contains no AWS credentials or Cognito client secret.
+- **Output validity:** The Lambda handler checks feedback IDs, allowed sentiment/theme values, response structure, and cited evidence IDs instead of accepting model output at face value. These safeguards do not guarantee that a semantically plausible classification is correct.
+- **Business decisions:** AI-generated investigative recommendations are suggestions for an analyst, not verified root causes, company policy, or autonomous decisions. Small samples are explicitly identified as non-representative.
+- **Independent verification:** Core validation, segmentation, and evidence logic are checked with deterministic automated tests and mock inference, without requiring a generative model to declare its own output correct.
+
+**Limitations of AI use:** No labeled benchmark has yet established model classification precision or recall. AI assistance accelerates prototyping, but source review, testing, security configuration, deployment verification, and decisions about operational readiness remain necessary.
 
 ## Segment metrics and evidence contract
 
